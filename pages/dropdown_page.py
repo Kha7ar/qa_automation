@@ -15,4 +15,4 @@ class DropdownPage:
         self.dropdown.select_option(option)
 
     def get_value(self) -> str:
-        return self.dropdown.input_value()
+        return self.dropdown.input_value() 

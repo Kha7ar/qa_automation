@@ -150,3 +150,53 @@ def test_full(page: Page):
     page.go_back()
     expect(page).to_have_url("https://the-internet.herokuapp.com/")
 
+
+
+def test_label(page: Page):
+    page.goto("https://the-internet.herokuapp.com/login")
+    page.get_by_label("Username").fill("tomsmith")
+    page.get_by_label("Password").fill("SuperSecretPassword!")
+    page.get_by_role("button", name="Login").click()
+    expect(page).to_have_url("https://the-internet.herokuapp.com/secure")
+
+
+def test_find_by_number(page: Page):
+    page.goto("https://the-internet.herokuapp.com/add_remove_elements/")
+    for _ in range(10):
+        page.get_by_role("button", name="Add Element").click()
+    page.get_by_role("button", name="Delete").nth(1).click()
+    page.get_by_role("button", name="Delete").count() == 9
+
+
+def test_table_data(page: Page):
+    page.goto("https://the-internet.herokuapp.com/tables")
+    expect(page.locator("#table1 td:has-text('Smith')").first).to_be_visible()
+    expect(page.locator("#table1 td:has-text('jsmith@gmail.com')").first).to_be_visible()
+    assert page.locator("#table1 tr").count() > 1
+
+
+def test_new_window(page: Page):
+    page.goto("https://the-internet.herokuapp.com/windows")
+    with page.expect_popup() as popup_info:
+        page.get_by_role("link", name="Click Here").click()
+    new_page = popup_info.value
+    new_page.wait_for_load_state()
+    expect(new_page.get_by_text("New Window")).to_be_visible()
+    new_page.close()
+    expect(page).to_have_url("https://the-internet.herokuapp.com/windows")
+
+
+
+def test_multiple_windows(page: Page):
+    page.goto("https://the-internet.herokuapp.com/windows")
+    with page.expect_popup() as main_info:
+        page.get_by_role("link", name="Click Here").click()
+    newest_page = main_info.value
+    newest_page.wait_for_load_state()
+    expect(newest_page).to_have_url("https://the-internet.herokuapp.com/windows/new")
+    expect(newest_page.get_by_text("New Window")).to_be_visible()
+    newest_page.close()
+    expect(page).to_have_url("https://the-internet.herokuapp.com/windows")
+
+
+

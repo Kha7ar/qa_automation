@@ -23,3 +23,7 @@ class LoginPage:
 
     def logout(self):
         self.logout_button.click()
+
+
+    def unlogined_user(self):
+        self
