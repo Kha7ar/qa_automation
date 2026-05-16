@@ -8,17 +8,17 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       
       - name: Install dependencies
         run: |
-          pip install pytest playwright pytest-playwright
-          playwright install
+          pip install pytest playwright pytest-playwright allure-pytest
+          playwright install --with-deps chromium
       
       - name: Run tests
-        run: pytest tests/ -v
+        run: pytest tests/ -v --timeout=60
